@@ -1,12 +1,12 @@
 'use client';
 
-import { useRouter } from 'next/router';
+import { useParams, useRouter } from 'next/navigation';
 import { useEffect, useState } from 'react';
-import Layout from 'src/app/components/layouts/Layout';
+import Layout from '../../../components/layouts/Layout';
 
 export default function EmployerProfile() {
+  const { id } = useParams();
   const router = useRouter();
-  const { id } = router.query;
   const [employer, setEmployer] = useState(null);
   const [loading, setLoading] = useState(true);
   const [activeTab, setActiveTab] = useState('about');
