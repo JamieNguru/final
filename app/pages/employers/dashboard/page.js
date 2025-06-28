@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
-import ConfirmModal from "@/app/components/ConfirmModal";
+import ConfirmModal from "../../../components/ConfirmModal";
 
 export default function EmployerDashboardPage() {
   const [profile, setProfile] = useState(null);
