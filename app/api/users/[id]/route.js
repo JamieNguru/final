@@ -1,37 +1,88 @@
-// app/api/users/[id]/route.js
-import { NextResponse } from 'next/server'
+import { connectToDatabase } from '../../../../Lib/mongoose';
+import User from '../../../../models/User';
+import { NextResponse } from 'next/server';
 
 export async function PATCH(request, { params }) {
-  const { id } = params
-  const { action } = await request.json()
+  const { id } = params;
+  const { action, updates } = await request.json();
 
   try {
-    // Simulate database update
-    console.log(`Updating user ${id} with action: ${action}`)
-    // In a real app, you would update your database here
-    
-    return NextResponse.json({ success: true, message: `User ${action} successful` })
+    await connectToDatabase();
+
+    let updatedUser;
+
+    if (action === 'update') {
+      updatedUser = await User.findByIdAndUpdate(
+        id,
+        updates,
+        { new: true }
+      );
+    } else if (action === 'activate') {
+      updatedUser = await User.findByIdAndUpdate(
+        id,
+        { active: true },
+        { new: true }
+      );
+    } else if (action === 'deactivate') {
+      updatedUser = await User.findByIdAndUpdate(
+        id,
+        { active: false },
+        { new: true }
+      );
+    } else {
+      return NextResponse.json(
+        { success: false, message: 'Unknown action.' },
+        { status: 400 }
+      );
+    }
+
+    if (!updatedUser) {
+      return NextResponse.json(
+        { success: false, message: 'User not found.' },
+        { status: 404 }
+      );
+    }
+
+    return NextResponse.json({
+      success: true,
+      message: `User ${action} successful`,
+      user: updatedUser
+    });
+
   } catch (error) {
+    console.error(error);
     return NextResponse.json(
-      { success: false, message: `User ${action} failed` },
+      { success: false, message: `User ${action} failed`, error: error.message },
       { status: 500 }
-    )
+    );
   }
 }
 
 export async function DELETE(request, { params }) {
-  const { id } = params
+  const { id } = params;
 
   try {
-    // Simulate database deletion
-    console.log(`Deleting user ${id}`)
-    // In a real app, you would delete from your database here
-    
-    return NextResponse.json({ success: true, message: 'User deleted successfully' })
+    await connectToDatabase();
+
+    const deletedUser = await User.findByIdAndDelete(id);
+
+    if (!deletedUser) {
+      return NextResponse.json(
+        { success: false, message: 'User not found.' },
+        { status: 404 }
+      );
+    }
+
+    return NextResponse.json({
+      success: true,
+      message: 'User deleted successfully',
+    });
+
   } catch (error) {
+    console.error(error);
     return NextResponse.json(
-      { success: false, message: 'User deletion failed' },
+      { success: false, message: 'User deletion failed', error: error.message },
       { status: 500 }
-    )
+    );
   }
 }

@@ -1,9 +1,19 @@
-// app/api/kyc/route.js
+import { connectToDatabase } from "../../../Lib/mongoose";
+import KYC from "../../../models/KYC";
+import { NextResponse } from "next/server";
+
 export async function GET() {
-  // Sample data - replace with your actual data source
-  const kycData = [
-    { id: '1', userName: 'John Doe', idType: 'Passport', idNumber: 'A12345678', status: 'pending' },
-    { id: '2', userName: 'Jane Smith', idType: 'Driver License', idNumber: 'DL87654321', status: 'pending' }
-  ]
-  return Response.json(kycData)
+  try {
+    await connectToDatabase();
+
+    const kycData = await KYC.find();
+
+    return NextResponse.json(kycData);
+  } catch (error) {
+    console.error(error);
+    return NextResponse.json(
+      { success: false, message: "Failed to fetch KYC data", error: error.message },
+      { status: 500 }
+    );
+  }
 }
