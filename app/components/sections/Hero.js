@@ -28,7 +28,7 @@ const Hero = () => {
                 Find Work
               </Link>
               <Link
-                href="/auth/register?role=employer"
+                href="app/pages/role-selection?role=employer"
                 className="bg-blue-600 text-white px-6 py-3 rounded-md font-medium hover:bg-blue-800 border border-white transition"
               >
                 Hire Talent
