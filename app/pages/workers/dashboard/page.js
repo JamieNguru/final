@@ -6,48 +6,57 @@ export default function WorkerDashboardPage() {
   const [profile, setProfile] = useState(null);
   const [matchedJobs, setMatchedJobs] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
+  const [errorMsg, setErrorMsg] = useState('');
 
   useEffect(() => {
-    const token = localStorage.getItem('token');
-
     const fetchData = async () => {
       try {
         setIsLoading(true);
+        setErrorMsg('');
 
-        // Step 1 — fetch profile first
+        // Step 1 — fetch profile
         const profileRes = await fetch('http://localhost:5000/api/workers/me', {
           headers: {
-            Authorization: `Bearer ${token}`,
+            'Content-Type': 'application/json',
           },
         });
+
+        if (!profileRes.ok) {
+          const errText = await profileRes.text();
+          throw new Error(`Profile fetch failed: ${errText}`);
+        }
 
         const profileData = await profileRes.json();
         setProfile(profileData);
 
-        // Step 2 — fetch jobs only if we have profile._id
+        // Step 2 — fetch jobs if profile._id exists
         if (profileData?._id) {
           const jobsRes = await fetch(
             `http://localhost:5000/api/match/${profileData._id}`,
             {
               headers: {
-                Authorization: `Bearer ${token}`,
+                'Content-Type': 'application/json',
               },
             }
           );
+
+          if (!jobsRes.ok) {
+            const errText = await jobsRes.text();
+            throw new Error(`Job match fetch failed: ${errText}`);
+          }
 
           const jobsData = await jobsRes.json();
           setMatchedJobs(jobsData);
         }
       } catch (error) {
-        console.error('Error fetching data:', error);
+        console.error('Error fetching dashboard data:', error);
+        setErrorMsg(error.message);
       } finally {
         setIsLoading(false);
       }
     };
 
-    if (token) {
-      fetchData();
-    }
+    fetchData();
   }, []);
 
   return (
@@ -65,6 +74,10 @@ export default function WorkerDashboardPage() {
         {isLoading ? (
           <div className="flex justify-center items-center h-64">
             <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-indigo-600"></div>
+          </div>
+        ) : errorMsg ? (
+          <div className="text-center text-red-600 text-lg font-medium mt-10">
+            {errorMsg}
           </div>
         ) : (
           <>
@@ -89,9 +102,9 @@ export default function WorkerDashboardPage() {
                   </div>
                   <div>
                     <h2 className="text-2xl font-bold text-indigo-900">
-                      {profile.firstName} {profile.lastName}
+                      {profile.firstName || ''} {profile.lastName || ''}
                     </h2>
-                    <p className="text-indigo-600">{profile.email}</p>
+                    <p className="text-indigo-600">{profile.email || ''}</p>
                   </div>
                 </div>
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mt-6">
@@ -99,14 +112,18 @@ export default function WorkerDashboardPage() {
                     <h3 className="text-sm font-semibold text-indigo-500 uppercase tracking-wider">
                       Contact
                     </h3>
-                    <p className="mt-1 text-indigo-900">{profile.phone}</p>
+                    <p className="mt-1 text-indigo-900">
+                      {profile.phone || 'N/A'}
+                    </p>
                   </div>
                   <div className="bg-indigo-50 p-4 rounded-lg">
                     <h3 className="text-sm font-semibold text-indigo-500 uppercase tracking-wider">
                       Member Since
                     </h3>
                     <p className="mt-1 text-indigo-900">
-                      {new Date(profile.createdAt).toLocaleDateString()}
+                      {profile.createdAt
+                        ? new Date(profile.createdAt).toLocaleDateString()
+                        : 'N/A'}
                     </p>
                   </div>
                 </div>
@@ -143,7 +160,8 @@ export default function WorkerDashboardPage() {
                     No matched jobs yet
                   </h3>
                   <p className="mt-1 text-indigo-600">
-                    We'll notify you when we find perfect matches for your skills
+                    We'll notify you when we find perfect matches for your
+                    skills.
                   </p>
                 </div>
               ) : (
@@ -172,9 +190,11 @@ export default function WorkerDashboardPage() {
                         </div>
                         <div>
                           <h3 className="text-lg font-semibold text-indigo-900 group-hover:text-indigo-700 transition-colors duration-300">
-                            {job.title}
+                            {job.title || 'Untitled Job'}
                           </h3>
-                          <p className="mt-2 text-indigo-600">{job.description}</p>
+                          <p className="mt-2 text-indigo-600">
+                            {job.description || 'No description'}
+                          </p>
                           <div className="mt-3 flex items-center text-sm text-indigo-500">
                             <svg
                               xmlns="http://www.w3.org/2000/svg"
@@ -211,4 +231,5 @@ export default function WorkerDashboardPage() {
     </main>
   );
 }
+
 

@@ -1,5 +1,3 @@
-
-// pages/Post.js
 'use client';
 
 import { useState } from 'react';
@@ -8,89 +6,225 @@ export default function Post() {
   const [hasScreening, setHasScreening] = useState(false);
 
   return (
-    <form className="space-y-8 min-h-screen bg-blue-50 py-10 px-4">
-      <div className="max-w-4xl mx-auto">
-        <h1 className="text-3xl font-bold text-blue-600 mb-2">Post a New Job</h1>
-        <p className="text-black mb-6">
-          Fill out the form below to post your job opening. All fields marked with * are required.
-        </p>
+    <form className="min-h-screen bg-gradient-to-br from-indigo-50 to-blue-50 py-12 px-4 sm:px-6 transition-all duration-300">
+      <div className="max-w-4xl mx-auto space-y-8">
+        {/* Page header */}
+        <div className="text-center">
+          <h1 className="text-4xl font-bold text-indigo-900 mb-3 font-serif tracking-tight">
+            Post a New Job Opportunity
+          </h1>
+          <p className="text-lg text-indigo-700 max-w-2xl mx-auto">
+            Attract top talent with a beautifully crafted job listing. All fields marked with * are required.
+          </p>
+        </div>
 
-        <section className="bg-white p-6 rounded-lg shadow border border-blue-100">
-          <h2 className="text-xl font-semibold text-blue-800 mb-4">Job Details</h2>
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-            <input className="border border-blue-300 p-2 rounded" type="text" placeholder="e.g. Senior Software Engineer" required />
-            <input className="border border-blue-300 p-2 rounded" type="text" placeholder="e.g. San Francisco, CA or Remote" required />
+        {/* Job Details section */}
+        <section className="bg-white p-8 rounded-xl shadow-lg border border-indigo-100 transition-all hover:shadow-xl">
+          <h2 className="text-2xl font-semibold text-indigo-800 mb-6 pb-2 border-b border-indigo-100 font-serif">
+            Job Details
+          </h2>
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+            <div>
+              <label className="block text-sm font-medium text-indigo-700 mb-1">Job Title *</label>
+              <input
+                className="w-full border border-indigo-200 p-3 rounded-lg text-indigo-900 focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition-all"
+                type="text"
+                placeholder="e.g. Senior Software Engineer"
+                required
+              />
+            </div>
+            <div>
+              <label className="block text-sm font-medium text-indigo-700 mb-1">Location *</label>
+              <input
+                className="w-full border border-indigo-200 p-3 rounded-lg text-indigo-900 focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition-all"
+                type="text"
+                placeholder="e.g. San Francisco, CA or Remote"
+                required
+              />
+            </div>
 
-            <select className="border border-blue-300 p-2 rounded" required>
-              <option value="">Select job type</option>
-              <option>Full-Time</option>
-              <option>Part-Time</option>
-              <option>Contract</option>
-            </select>
+            <div>
+              <label className="block text-sm font-medium text-indigo-700 mb-1">Job Type *</label>
+              <select 
+                className="w-full border border-indigo-200 p-3 rounded-lg text-indigo-900 focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition-all appearance-none"
+                required
+              >
+                <option value="">Select job type</option>
+                <option>Full-Time</option>
+                <option>Part-Time</option>
+                <option>Contract</option>
+              </select>
+            </div>
 
-            <select className="border border-blue-300 p-2 rounded" required>
-              <option value="">Select experience level</option>
-              <option>Entry</option>
-              <option>Mid</option>
-              <option>Senior</option>
-            </select>
+            <div>
+              <label className="block text-sm font-medium text-indigo-700 mb-1">Experience Level *</label>
+              <select 
+                className="w-full border border-indigo-200 p-3 rounded-lg text-indigo-900 focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition-all appearance-none"
+                required
+              >
+                <option value="">Select experience level</option>
+                <option>Entry</option>
+                <option>Mid</option>
+                <option>Senior</option>
+              </select>
+            </div>
 
-            <input className="border border-blue-300 p-2 rounded" type="number" placeholder="e.g. 50000" />
-            <input className="border border-blue-300 p-2 rounded" type="number" placeholder="e.g. 80000" />
-          </div>
-
-          <div className="mt-4">
-            <label className="block font-semibold text-blue-800 mb-2">Remote Work Options *</label>
-            <div className="flex gap-6 text-blue-700">
-              <label><input type="radio" name="remote" required /> On-site only</label>
-              <label><input type="radio" name="remote" /> Hybrid</label>
-              <label><input type="radio" name="remote" /> Remote only</label>
+            <div>
+              <label className="block text-sm font-medium text-indigo-700 mb-1">Minimum Salary (optional)</label>
+              <input
+                className="w-full border border-indigo-200 p-3 rounded-lg text-indigo-900 focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition-all"
+                type="number"
+                placeholder="e.g. 50000"
+              />
+            </div>
+            <div>
+              <label className="block text-sm font-medium text-indigo-700 mb-1">Maximum Salary (optional)</label>
+              <input
+                className="w-full border border-indigo-200 p-3 rounded-lg text-indigo-900 focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition-all"
+                type="number"
+                placeholder="e.g. 80000"
+              />
             </div>
           </div>
 
-          <textarea className="border border-blue-300 p-2 rounded w-full mt-4" rows="4" placeholder="Describe the role, responsibilities, and ideal candidate" required></textarea>
-          <textarea className="border border-blue-300 p-2 rounded w-full mt-4" rows="4" placeholder="List the skills, qualifications, and experience required" required></textarea>
-        </section>
-
-        <section className="bg-white p-6 rounded-lg shadow border border-blue-100">
-          <h2 className="text-xl font-semibold text-blue-800 mb-4">Application Settings</h2>
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-            <input className="border border-blue-300 p-2 rounded" type="email" placeholder="Where applications will be sent" required />
-            <input className="border border-blue-300 p-2 rounded" type="url" placeholder="External application form URL (optional)" />
+          <div className="mt-6">
+            <label className="block text-sm font-medium text-indigo-700 mb-3">
+              Remote Work Options *
+            </label>
+            <div className="flex flex-wrap gap-4">
+              <label className="inline-flex items-center">
+                <input 
+                  type="radio" 
+                  name="remote" 
+                  className="h-4 w-4 text-indigo-600 focus:ring-indigo-500 border-indigo-300 transition-all"
+                  required 
+                />
+                <span className="ml-2 text-indigo-700">On-site only</span>
+              </label>
+              <label className="inline-flex items-center">
+                <input 
+                  type="radio" 
+                  name="remote" 
+                  className="h-4 w-4 text-indigo-600 focus:ring-indigo-500 border-indigo-300 transition-all"
+                />
+                <span className="ml-2 text-indigo-700">Hybrid</span>
+              </label>
+              <label className="inline-flex items-center">
+                <input 
+                  type="radio" 
+                  name="remote" 
+                  className="h-4 w-4 text-indigo-600 focus:ring-indigo-500 border-indigo-300 transition-all"
+                />
+                <span className="ml-2 text-indigo-700">Remote only</span>
+              </label>
+            </div>
           </div>
 
-          <div className="mt-4">
-            <label className="flex items-center gap-2 text-blue-700">
+          <div className="mt-6">
+            <label className="block text-sm font-medium text-indigo-700 mb-1">
+              Job Description *
+            </label>
+            <textarea
+              className="w-full border border-indigo-200 p-3 rounded-lg text-indigo-900 focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition-all min-h-[120px]"
+              placeholder="Describe the role, responsibilities, and ideal candidate"
+              required
+            ></textarea>
+          </div>
+
+          <div className="mt-6">
+            <label className="block text-sm font-medium text-indigo-700 mb-1">
+              Requirements *
+            </label>
+            <textarea
+              className="w-full border border-indigo-200 p-3 rounded-lg text-indigo-900 focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition-all min-h-[120px]"
+              placeholder="List the skills, qualifications, and experience required"
+              required
+            ></textarea>
+          </div>
+        </section>
+
+        {/* Application Settings section */}
+        <section className="bg-white p-8 rounded-xl shadow-lg border border-indigo-100 transition-all hover:shadow-xl">
+          <h2 className="text-2xl font-semibold text-indigo-800 mb-6 pb-2 border-b border-indigo-100 font-serif">
+            Application Settings
+          </h2>
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+            <div>
+              <label className="block text-sm font-medium text-indigo-700 mb-1">Application Email *</label>
+              <input
+                className="w-full border border-indigo-200 p-3 rounded-lg text-indigo-900 focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition-all"
+                type="email"
+                placeholder="Where applications will be sent"
+                required
+              />
+            </div>
+            <div>
+              <label className="block text-sm font-medium text-indigo-700 mb-1">External Application URL</label>
+              <input
+                className="w-full border border-indigo-200 p-3 rounded-lg text-indigo-900 focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition-all"
+                type="url"
+                placeholder="External application form URL (optional)"
+              />
+            </div>
+          </div>
+
+          <div className="mt-6">
+            <label className="flex items-center gap-3 text-indigo-700">
               <input
                 type="checkbox"
+                className="h-4 w-4 text-indigo-600 focus:ring-indigo-500 border-indigo-300 rounded transition-all"
                 onChange={(e) => setHasScreening(e.target.checked)}
               />
-              Include a screening question for applicants
+              <span>Include a screening question for applicants</span>
             </label>
 
             {hasScreening && (
-              <input
-                className="border border-blue-300 p-2 rounded w-full mt-2"
-                type="text"
-                placeholder="e.g. How many years of experience do you have with React?"
-              />
+              <div className="mt-3">
+                <input
+                  className="w-full border border-indigo-200 p-3 rounded-lg text-indigo-900 focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition-all"
+                  type="text"
+                  placeholder="e.g. How many years of experience do you have with React?"
+                />
+              </div>
             )}
           </div>
 
-          <div className="mt-4 space-y-2 text-blue-700">
-            <label className="flex items-center gap-2">
-              <input type="checkbox" /> Require resume upload
+          <div className="mt-6 space-y-3 text-indigo-700">
+            <label className="flex items-center gap-3">
+              <input 
+                type="checkbox" 
+                className="h-4 w-4 text-indigo-600 focus:ring-indigo-500 border-indigo-300 rounded transition-all"
+              /> 
+              <span>Require resume upload</span>
             </label>
-            <label className="flex items-center gap-2">
-              <input type="checkbox" /> Require cover letter
+            <label className="flex items-center gap-3">
+              <input 
+                type="checkbox" 
+                className="h-4 w-4 text-indigo-600 focus:ring-indigo-500 border-indigo-300 rounded transition-all"
+              /> 
+              <span>Require cover letter</span>
             </label>
           </div>
 
-          <div className="mt-6 flex justify-between items-center">
-            <p className="font-semibold text-blue-800">Total: <span className="text-black">$199.00</span></p>
-            <button type="submit" className="bg-blue-700 text-white px-4 py-2 rounded hover:bg-blue-800">
-              Save as Draft
-            </button>
+          <div className="mt-8 flex flex-col sm:flex-row justify-between items-center pt-6 border-t border-indigo-100">
+            <div className="mb-4 sm:mb-0">
+              <p className="text-sm text-indigo-500">Total</p>
+              <p className="text-3xl font-bold text-indigo-800">$199.00</p>
+            </div>
+            <div className="flex space-x-3">
+              <button
+                type="button"
+                className="px-6 py-3 border border-indigo-300 text-indigo-700 rounded-lg hover:bg-indigo-50 transition-all duration-200"
+              >
+                Save as Draft
+              </button>
+              <button
+                type="submit"
+                className="px-6 py-3 bg-gradient-to-r from-indigo-600 to-blue-600 text-white rounded-lg hover:from-indigo-700 hover:to-blue-700 transition-all duration-200 shadow-md hover:shadow-lg"
+              >
+                Publish Job
+              </button>
+            </div>
           </div>
         </section>
       </div>

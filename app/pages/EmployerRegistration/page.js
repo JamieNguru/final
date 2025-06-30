@@ -3,20 +3,20 @@
 import { useState } from 'react';
 import PhoneInput from 'react-phone-input-2';
 import 'react-phone-input-2/lib/style.css';
-import { 
-  BaseFormLayout, 
-  Section, 
-  FormInput, 
-  FileUpload, 
-  RadioButton, 
-  Checkbox 
+import {
+  BaseFormLayout,
+  Section,
+  FormInput,
+  FileUpload,
+  RadioButton,
+  Checkbox
 } from '../../components/forms';
 
 import { useRegistrationForm } from '../../Hooks/useRegistrationForm';
 
 export default function EmployerRegistrationPage() {
   const [hoveredUpload, setHoveredUpload] = useState(null);
-  
+
   const {
     formData,
     errors,
@@ -49,26 +49,35 @@ export default function EmployerRegistrationPage() {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+
     if (validate()) {
       setIsSubmitting(true);
 
       try {
         const formPayload = new FormData();
 
-        // Append all non-file fields
         for (const key in formData) {
-          if (formData[key] !== null && typeof formData[key] !== 'object') {
-            formPayload.append(key, formData[key]);
+          const value = formData[key];
+
+          // Append only non-file, non-object fields
+          if (
+            value !== null &&
+            typeof value !== 'object' &&
+            typeof value !== 'boolean'
+          ) {
+            formPayload.append(key, value);
           }
         }
 
-        // Append files separately
         if (formData.idFront) {
           formPayload.append('idFront', formData.idFront);
         }
         if (formData.idBack) {
           formPayload.append('idBack', formData.idBack);
         }
+
+        formPayload.append('confirmInfo', formData.confirmInfo ? 'true' : 'false');
+        formPayload.append('consent', formData.consent ? 'true' : 'false');
 
         const res = await fetch('/api/employers', {
           method: 'POST',
@@ -98,6 +107,7 @@ export default function EmployerRegistrationPage() {
             idFront: null,
             idBack: null,
           });
+          setErrors({});
         } else {
           console.error('Submission error', await res.text());
         }
@@ -118,28 +128,28 @@ export default function EmployerRegistrationPage() {
     >
       <Section title="Personal Information" icon="👤">
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-          <FormInput 
+          <FormInput
             name="firstName"
             value={formData.firstName}
             onChange={handleChange}
-            placeholder="First Name*" 
+            placeholder="First Name*"
             error={errors.firstName}
             icon="user"
           />
-          <FormInput 
+          <FormInput
             name="lastName"
             value={formData.lastName}
             onChange={handleChange}
-            placeholder="Last Name*" 
+            placeholder="Last Name*"
             error={errors.lastName}
             icon="user"
           />
-          <FormInput 
+          <FormInput
             type="email"
             name="email"
             value={formData.email}
             onChange={handleChange}
-            placeholder="Email Address*" 
+            placeholder="Email Address*"
             error={errors.email}
             icon="email"
           />
@@ -154,7 +164,9 @@ export default function EmployerRegistrationPage() {
               buttonClass="!rounded-l-lg !bg-gray-100 !border-r !border-gray-300"
               containerClass={`!w-full ${errors.phone ? '!border-red-500 !rounded-lg' : ''}`}
             />
-            {errors.phone && <p className="text-red-500 text-xs mt-1">{errors.phone}</p>}
+            {errors.phone && (
+              <p className="text-red-500 text-xs mt-1">{errors.phone}</p>
+            )}
           </div>
           <input
             type="date"
@@ -171,7 +183,9 @@ export default function EmployerRegistrationPage() {
             className={`w-full px-4 py-2.5 rounded-lg border border-gray-300 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all
               ${formData.gender ? 'text-black' : 'text-gray-300'}`}
           >
-            <option value="" disabled hidden>Gender*</option>
+            <option value="" disabled hidden>
+              Gender*
+            </option>
             <option value="male">Male</option>
             <option value="female">Female</option>
             <option value="other">Other</option>
@@ -181,43 +195,43 @@ export default function EmployerRegistrationPage() {
 
       <Section title="Address Information" icon="📍">
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-          <FormInput 
+          <FormInput
             name="street"
             value={formData.street}
             onChange={handleChange}
-            placeholder="Street Address*" 
+            placeholder="Street Address*"
             error={errors.street}
             icon="location"
           />
-          <FormInput 
+          <FormInput
             name="city"
             value={formData.city}
             onChange={handleChange}
-            placeholder="City*" 
+            placeholder="City*"
             error={errors.city}
             icon="city"
           />
-          <FormInput 
+          <FormInput
             name="state"
             value={formData.state}
             onChange={handleChange}
-            placeholder="State/Province*" 
+            placeholder="State/Province*"
             error={errors.state}
             icon="region"
           />
-          <FormInput 
+          <FormInput
             name="zip"
             value={formData.zip}
             onChange={handleChange}
-            placeholder="Zip/Postal Code*" 
+            placeholder="Zip/Postal Code*"
             error={errors.zip}
             icon="zip"
           />
-          <FormInput 
+          <FormInput
             name="country"
             value={formData.country}
             onChange={handleChange}
-            placeholder="Country*" 
+            placeholder="Country*"
             error={errors.country}
             icon="globe"
           />
@@ -229,19 +243,19 @@ export default function EmployerRegistrationPage() {
           Upload both sides of your government-issued ID
         </p>
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-          <FileUpload 
+          <FileUpload
             label="Front Side of ID*"
             side="idFront"
-            onChange={(e) => handleFileChange(e, 'idFront')}
+            onChange={(file) => handleFileChange(file, 'idFront')}
             isHovered={hoveredUpload === 'front'}
             onMouseEnter={() => setHoveredUpload('front')}
             onMouseLeave={() => setHoveredUpload(null)}
             error={errors.idFront}
           />
-          <FileUpload 
+          <FileUpload
             label="Back Side of ID*"
             side="idBack"
-            onChange={(e) => handleFileChange(e, 'idBack')}
+            onChange={(file) => handleFileChange(file, 'idBack')}
             isHovered={hoveredUpload === 'back'}
             onMouseEnter={() => setHoveredUpload('back')}
             onMouseLeave={() => setHoveredUpload(null)}
@@ -256,22 +270,22 @@ export default function EmployerRegistrationPage() {
             Do you have any criminal record?*
           </label>
           <div className="flex flex-wrap gap-4">
-            <RadioButton 
+            <RadioButton
               name="hasCriminalRecord"
               value="no"
-              label="No" 
-              checked={formData.hasCriminalRecord === "no"}
-              onChange={() => setFormData({...formData, hasCriminalRecord: "no"})}
+              label="No"
+              checked={formData.hasCriminalRecord === 'no'}
+              onChange={() => setFormData({ ...formData, hasCriminalRecord: 'no' })}
             />
-            <RadioButton 
+            <RadioButton
               name="hasCriminalRecord"
               value="yes"
-              label="Yes" 
-              checked={formData.hasCriminalRecord === "yes"}
-              onChange={() => setFormData({...formData, hasCriminalRecord: "yes"})}
+              label="Yes"
+              checked={formData.hasCriminalRecord === 'yes'}
+              onChange={() => setFormData({ ...formData, hasCriminalRecord: 'yes' })}
             />
           </div>
-          {formData.hasCriminalRecord === "yes" && (
+          {formData.hasCriminalRecord === 'yes' && (
             <div className="mt-3">
               <label className="block text-gray-700 font-medium mb-1">
                 Please provide details of the offence*
@@ -291,21 +305,21 @@ export default function EmployerRegistrationPage() {
 
       <Section title="Terms & Conditions" icon="📝">
         <div className="space-y-3">
-          <Checkbox 
+          <Checkbox
             name="confirmInfo"
             checked={formData.confirmInfo}
-            onChange={(checked) => handleChange({
-              target: { name: "confirmInfo", value: checked }
-            })}
+            onChange={(checked) =>
+              setFormData({ ...formData, confirmInfo: checked })
+            }
             label="I certify that all information provided is accurate and complete."
             error={errors.confirmInfo}
           />
-          <Checkbox 
+          <Checkbox
             name="consent"
             checked={formData.consent}
-            onChange={(checked) => handleChange({
-              target: { name: "consent", value: checked }
-            })}
+            onChange={(checked) =>
+              setFormData({ ...formData, consent: checked })
+            }
             label="I agree to the Terms of Service and Privacy Policy."
             error={errors.consent}
           />
