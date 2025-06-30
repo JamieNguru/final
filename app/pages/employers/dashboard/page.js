@@ -18,20 +18,27 @@ export default function EmployerDashboardPage() {
     const fetchData = async () => {
       try {
         setIsLoading(true);
-        const [profileRes, jobsRes] = await Promise.all([
-          fetch('http://localhost:5000/api/employers/me', {
-            headers: { Authorization: `Bearer ${token}` },
-          }),
-          fetch(`http://localhost:5000/api/jobs/employer/${profile?._id}`, {
-            headers: { Authorization: `Bearer ${token}` },
-          })
-        ]);
+
+        // Step 1 — fetch profile first
+        const profileRes = await fetch('http://localhost:5000/api/employers/me', {
+          headers: { Authorization: `Bearer ${token}` },
+        });
 
         const profileData = await profileRes.json();
         setProfile(profileData);
-        
-        const jobsData = await jobsRes.json();
-        setJobs(jobsData);
+
+        // Step 2 — fetch jobs only if we have profile._id
+        if (profileData?._id) {
+          const jobsRes = await fetch(
+            `http://localhost:5000/api/jobs/employer/${profileData._id}`,
+            {
+              headers: { Authorization: `Bearer ${token}` },
+            }
+          );
+
+          const jobsData = await jobsRes.json();
+          setJobs(jobsData);
+        }
       } catch (error) {
         console.error('Error fetching data:', error);
       } finally {
@@ -67,11 +74,11 @@ export default function EmployerDashboardPage() {
       <div className="max-w-7xl mx-auto">
         <div className="flex justify-between items-center mb-10">
           <div>
-            <h1 className="text-3xl font-bold text-indigo-900">Employer Portal</h1>
+            <h1 className="text-3xl font-bold text-indigo-900">Employer dashboard</h1>
             <p className="text-indigo-600 mt-2">Manage your profile and job postings</p>
           </div>
           <button
-            onClick={() => router.push('/employer/post-job')}
+            onClick={() => router.push('../jobs/post')}
             className="bg-gradient-to-r from-indigo-600 to-blue-600 text-white px-6 py-3 rounded-lg shadow-md hover:shadow-lg transition-all duration-300 hover:from-indigo-700 hover:to-blue-700 flex items-center"
           >
             <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 mr-2" viewBox="0 0 20 20" fill="currentColor">
@@ -97,7 +104,9 @@ export default function EmployerDashboardPage() {
                       </svg>
                     </div>
                     <div>
-                      <h2 className="text-xl font-bold text-indigo-900">{profile.companyName || `${profile.firstName} ${profile.lastName}`}</h2>
+                      <h2 className="text-xl font-bold text-indigo-900">
+                        {profile.companyName || `${profile.firstName} ${profile.lastName}`}
+                      </h2>
                       <p className="text-indigo-600">{profile.email}</p>
                     </div>
                   </div>

@@ -13,23 +13,28 @@ export default function WorkerDashboardPage() {
     const fetchData = async () => {
       try {
         setIsLoading(true);
-        const [profileRes, jobsRes] = await Promise.all([
-          fetch('http://localhost:5000/api/workers/me', {
-            headers: {
-              Authorization: `Bearer ${token}`,
-            },
-          }),
-          fetch(`http://localhost:5000/api/match/${profile?._id}`, {
-            headers: {
-              Authorization: `Bearer ${token}`,
-            },
-          })
-        ]);
+
+        // Step 1 — fetch profile first
+        const profileRes = await fetch('http://localhost:5000/api/workers/me', {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        });
 
         const profileData = await profileRes.json();
         setProfile(profileData);
-        
-        if (profileData._id) {
+
+        // Step 2 — fetch jobs only if we have profile._id
+        if (profileData?._id) {
+          const jobsRes = await fetch(
+            `http://localhost:5000/api/match/${profileData._id}`,
+            {
+              headers: {
+                Authorization: `Bearer ${token}`,
+              },
+            }
+          );
+
           const jobsData = await jobsRes.json();
           setMatchedJobs(jobsData);
         }
@@ -50,7 +55,7 @@ export default function WorkerDashboardPage() {
       <div className="max-w-6xl mx-auto">
         <div className="text-center mb-12">
           <h1 className="text-4xl font-extrabold text-indigo-900 mb-2">
-            Professional Dashboard
+            Worker Dashboard
           </h1>
           <p className="text-lg text-indigo-600">
             Manage your profile and job opportunities
@@ -206,3 +211,4 @@ export default function WorkerDashboardPage() {
     </main>
   );
 }
+
