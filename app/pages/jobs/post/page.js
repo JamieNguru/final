@@ -209,7 +209,7 @@ export default function Post() {
           <div className="mt-8 flex flex-col sm:flex-row justify-between items-center pt-6 border-t border-indigo-100">
             <div className="mb-4 sm:mb-0">
               <p className="text-sm text-indigo-500">Total</p>
-              <p className="text-3xl font-bold text-indigo-800">$199.00</p>
+              <p className="text-3xl font-bold text-indigo-800">KSh 50000</p>
             </div>
             <div className="flex space-x-3">
               <button

@@ -45,7 +45,7 @@ export default function EditEmployerProfilePage() {
       body: JSON.stringify(form),
     });
 
-    router.push("/employer/dashboard");
+    router.push("/pages/employers/dashboard");
   };
 
   return (

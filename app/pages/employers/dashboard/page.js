@@ -139,7 +139,7 @@ export default function EmployerDashboardPage() {
               </div>
             </div>
             <button
-              onClick={() => router.push('/pages/employer/edit-profile')}
+              onClick={() => router.push('/pages/employers/edit-profile')}
               className="bg-white border border-indigo-200/70 text-indigo-700 px-5 py-2.5 rounded-xl hover:bg-indigo-50/50 transition-all duration-300 flex items-center shadow-sm hover:shadow-md group"
             >
               <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 mr-2 text-indigo-600/90 group-hover:text-indigo-700 transition-colors" viewBox="0 0 20 20" fill="currentColor">
@@ -287,7 +287,7 @@ export default function EmployerDashboardPage() {
                             </div>
                           </div>
                           <span className="text-lg font-semibold text-indigo-800 whitespace-nowrap">
-                            ${job.salaryRange?.min?.toLocaleString() || '0'} - ${job.salaryRange?.max?.toLocaleString() || '0'}
+                            KSH{job.salaryRange?.min?.toLocaleString() || '0'} - KSH{job.salaryRange?.max?.toLocaleString() || '0'}
                           </span>
                         </div>
                         

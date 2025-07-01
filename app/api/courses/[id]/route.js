@@ -1,4 +1,4 @@
-import { connectToDatabase } from "../../../../Lib/mongoose";
+import { connectToDatabase } from "../../../../lib/mongoose";
 import Course from "../../../../models/Course";
 import { NextResponse } from "next/server";
 
