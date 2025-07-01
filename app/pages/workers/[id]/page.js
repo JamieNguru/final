@@ -1,12 +1,13 @@
 'use client';
 
+import React, { useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
-import { useEffect, useState } from 'react';
 import Layout from '../../../components/layouts/Layout';
 
 export default function WorkerProfile({ params }) {
   const router = useRouter();
-  const id = params.id;
+  const { id } = params;
+
   const [worker, setWorker] = useState(null);
   const [loading, setLoading] = useState(true);
   const [activeTab, setActiveTab] = useState('overview');
@@ -68,76 +69,194 @@ export default function WorkerProfile({ params }) {
     );
   }
 
+  const sidebarLinks = [
+    { key: 'overview', label: 'Overview' },
+    { key: 'skills', label: 'Skills & Certifications' },
+    { key: 'experience', label: 'Experience' },
+  ];
+
   return (
     <Layout title={`${worker.name} | Professional Profile`}>
-      <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-        <div className="bg-white rounded-xl shadow-lg overflow-hidden">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 grid grid-cols-1 md:grid-cols-4 gap-8">
+        
+        {/* Sidebar */}
+        <aside className="md:col-span-1 bg-white rounded-lg shadow p-4">
+          <h2 className="text-lg font-bold text-indigo-700 mb-4">Sections</h2>
+          <ul className="space-y-2">
+            {sidebarLinks.map((link) => (
+              <li key={link.key}>
+                <button
+                  onClick={() => setActiveTab(link.key)}
+                  className={`block w-full text-left px-3 py-2 rounded hover:bg-indigo-50 ${
+                    activeTab === link.key
+                      ? 'bg-indigo-100 text-indigo-700 font-semibold'
+                      : 'text-gray-700'
+                  }`}
+                >
+                  {link.label}
+                </button>
+              </li>
+            ))}
+          </ul>
+        </aside>
 
-          {/* Profile Header */}
-          <div className="bg-gradient-to-r from-indigo-600 to-blue-600 p-6 md:p-8 text-white">
-            <div className="flex flex-col md:flex-row items-start md:items-center gap-6">
-              <div className="bg-white/20 backdrop-blur-sm h-24 w-24 rounded-full flex items-center justify-center text-4xl font-bold shrink-0">
-                {worker.name?.charAt(0).toUpperCase()}
-              </div>
-              <div className="flex-1">
-                <h1 className="text-2xl md:text-3xl font-bold">{worker.name}</h1>
-                <p className="text-white/90 text-lg mt-1">
-                  {worker.title || 'Skilled Professional'}
-                </p>
-                <div className="flex flex-wrap items-center gap-4 mt-3">
-                  <div className="flex items-center text-white/80">
-                    <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 mr-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" />
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" />
-                    </svg>
-                    {worker.location || 'Location not specified'}
-                  </div>
-                  {worker.experience && (
+        {/* Main Content */}
+        <div className="md:col-span-3">
+          <div className="bg-white rounded-xl shadow-lg overflow-hidden">
+
+            {/* Profile Header */}
+            <div className="bg-gradient-to-r from-indigo-600 to-blue-600 p-6 md:p-8 text-white">
+              <div className="flex flex-col md:flex-row items-start md:items-center gap-6">
+                <div className="bg-white/20 backdrop-blur-sm h-24 w-24 rounded-full flex items-center justify-center text-4xl font-bold shrink-0">
+                  {worker.name?.charAt(0).toUpperCase()}
+                </div>
+                <div className="flex-1">
+                  <h1 className="text-2xl md:text-3xl font-bold">{worker.name}</h1>
+                  <p className="text-white/90 text-lg mt-1">
+                    {worker.title || 'Skilled Professional'}
+                  </p>
+                  <div className="flex flex-wrap items-center gap-4 mt-3">
                     <div className="flex items-center text-white/80">
-                      <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 mr-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 13.255A23.931 23.931 0 0112 15c-3.183 0-6.22-.62-9-1.745M16 6V4a2 2 0 00-2-2h-4a2 2 0 00-2 2v2m4 6h.01M5 20h14a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
-                      </svg>
-                      {worker.experience} years experience
+                      📍 {worker.location || 'Location not specified'}
                     </div>
-                  )}
+                    {worker.experience && (
+                      <div className="flex items-center text-white/80">
+                        🛠 {worker.experience} years experience
+                      </div>
+                    )}
+                  </div>
                 </div>
               </div>
             </div>
-          </div>
 
-          {/* Tabs */}
-          <div className="border-b border-gray-200">
-            <nav className="flex -mb-px">
-              <button
-                onClick={() => setActiveTab('overview')}
-                className={`py-4 px-6 text-center border-b-2 font-medium text-sm ${activeTab === 'overview' ? 'border-indigo-600 text-indigo-600' : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300'}`}
-              >
-                Overview
-              </button>
-              <button
-                onClick={() => setActiveTab('skills')}
-                className={`py-4 px-6 text-center border-b-2 font-medium text-sm ${activeTab === 'skills' ? 'border-indigo-600 text-indigo-600' : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300'}`}
-              >
-                Skills & Certifications
-              </button>
-              <button
-                onClick={() => setActiveTab('experience')}
-                className={`py-4 px-6 text-center border-b-2 font-medium text-sm ${activeTab === 'experience' ? 'border-indigo-600 text-indigo-600' : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300'}`}
-              >
-                Experience
-              </button>
-            </nav>
-          </div>
+            {/* Tabs (still shown for visual clarity) */}
+            <div className="border-b border-gray-200">
+              <nav className="flex -mb-px">
+                {sidebarLinks.map((link) => (
+                  <button
+                    key={link.key}
+                    onClick={() => setActiveTab(link.key)}
+                    className={`py-4 px-6 text-center border-b-2 font-medium text-sm ${
+                      activeTab === link.key
+                        ? 'border-indigo-600 text-indigo-600'
+                        : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300'
+                    }`}
+                  >
+                    {link.label}
+                  </button>
+                ))}
+              </nav>
+            </div>
 
-          {/* Tab Content */}
-          <div className="p-6 md:p-8">
-            {/* KEEP YOUR TAB RENDERING LOGIC AS IS */}
-            {/* I'm omitting your large tab code here to keep this example short, but keep all your tab sections exactly as they are in your original code. */}
-          </div>
+            {/* Tab Content */}
+            <div className="p-6 md:p-8">
+              {activeTab === 'overview' && (
+                <div className="space-y-4">
+                  <h3 className="text-xl font-semibold text-indigo-700 mb-4">About {worker.name}</h3>
+                  <p className="text-gray-700 leading-relaxed">
+                    {worker.bio || (
+                      <span className="text-gray-400 italic">No bio provided.</span>
+                    )}
+                  </p>
 
+                  <div className="mt-8 grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <div className="bg-indigo-50 p-4 rounded-lg">
+                      <h4 className="text-sm font-semibold text-indigo-500 uppercase tracking-wider mb-2">
+                        Contact Information
+                      </h4>
+                      <div className="space-y-2 text-gray-700">
+                        <p>
+                          <span className="font-medium">Email:</span>{' '}
+                          {worker.email || 'Not provided'}
+                        </p>
+                        <p>
+                          <span className="font-medium">Phone:</span>{' '}
+                          {worker.phone || 'Not provided'}
+                        </p>
+                      </div>
+                    </div>
+
+                    <div className="bg-indigo-50 p-4 rounded-lg">
+                      <h4 className="text-sm font-semibold text-indigo-500 uppercase tracking-wider mb-2">
+                        Professional Details
+                      </h4>
+                      <div className="space-y-2 text-gray-700">
+                        <p>
+                          <span className="font-medium">Category:</span>{' '}
+                          {worker.category || 'Not specified'}
+                        </p>
+                        <p>
+                          <span className="font-medium">Availability:</span>{' '}
+                          {worker.availability || 'Not specified'}
+                        </p>
+                        <p>
+                          <span className="font-medium">Rate:</span>{' '}
+                          {worker.rate
+                            ? `KES ${worker.rate}/hr`
+                            : 'Not specified'}
+                        </p>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              )}
+
+              {activeTab === 'skills' && (
+                <div className="space-y-4">
+                  <h3 className="text-xl font-semibold text-indigo-700 mb-4">
+                    Skills & Certifications
+                  </h3>
+                  {worker.skills?.length ? (
+                    <ul className="list-disc pl-6 space-y-2 text-gray-700">
+                      {worker.skills.map((skill, i) => (
+                        <li key={i}>{skill}</li>
+                      ))}
+                    </ul>
+                  ) : (
+                    <p className="text-gray-400 italic">
+                      No skills or certifications provided.
+                    </p>
+                  )}
+                </div>
+              )}
+
+              {activeTab === 'experience' && (
+                <div className="space-y-4">
+                  <h3 className="text-xl font-semibold text-indigo-700 mb-4">
+                    Work Experience
+                  </h3>
+                  {worker.experiences?.length ? (
+                    <div className="space-y-4">
+                      {worker.experiences.map((exp, i) => (
+                        <div
+                          key={i}
+                          className="border border-gray-200 rounded-lg p-5 hover:border-indigo-200 hover:shadow-md transition-all duration-300"
+                        >
+                          <h4 className="text-lg font-semibold text-indigo-700">
+                            {exp.title}
+                          </h4>
+                          <p className="text-gray-600 text-sm mt-1">
+                            {exp.company} • {exp.location} • {exp.duration}
+                          </p>
+                          <p className="mt-2 text-gray-700">
+                            {exp.description}
+                          </p>
+                        </div>
+                      ))}
+                    </div>
+                  ) : (
+                    <p className="text-gray-400 italic">
+                      No work experience listed.
+                    </p>
+                  )}
+                </div>
+              )}
+            </div>
+          </div>
         </div>
       </div>
     </Layout>
   );
 }
+
 
